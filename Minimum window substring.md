@@ -98,3 +98,47 @@ public class Solution {
 time complexity = O(s + t)
 space complexity = O(t)
 ```
+
+
+# Solution2
+```java
+class Solution {
+    public Map<Character, Integer> targetCounter = new HashMap<>();
+    public String rst = "";
+    public String minWindow(String s, String t) {
+        if (t.length() > s.length()) return "";
+        Map<Character, Integer> counte = new HashMap<>();
+        for(char c: t.toCharArray()) {
+            targetCounter.computeIfPresent(c, (k,v) -> v = v+1);
+            targetCounter.putIfAbsent(c, 1);
+            counte.put(c, 0);
+        }
+        Map<Character, Integer> counter = new HashMap<>(counte);
+        for (int i = 0; i<t.length(); i++) {
+            counter.computeIfPresent(s.charAt(i), (k,v) -> v = v+1);
+        }
+        int l=0,r=t.length()-1;
+        while(r-l+1 >= t.length() && r < s.length()) {
+            boolean flag = true;
+            for (Map.Entry<Character, Integer> en : targetCounter.entrySet()) {
+                if (counter.getOrDefault(en.getKey(), 0) < en.getValue()) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                if (rst.length() == 0 || r-l+1 < rst.length()) {
+                    rst = s.substring(l, r+1);
+                }
+                counter.computeIfPresent(s.charAt(l), (k,v) -> v = v-1);
+                l++;
+            } else {
+                r++;
+                if (!(r-l+1 >= t.length() && r < s.length())) break;
+                counter.computeIfPresent(s.charAt(r), (k,v) -> v = v+1);
+            }
+        }
+        return rst;
+    }
+}
+```
