@@ -103,3 +103,94 @@ class MapSum {
 Time complexity: O(m) where m is the maximun length of the inserted world
 Space complexity: O(26 ^ m) where m is the maximum length of the inserted world
 ```
+
+# Solution3
+```java
+class MapSum {
+
+        public Node root;
+        class Node {
+            boolean isEnd;
+            char letter;
+            int val;
+            int sum;
+            Node[] next;
+            public Node(char c) {
+                this.letter = c;
+                this.val = 0;
+                this.sum = 0;
+                this.next = new Node[26];
+                isEnd = false;
+            }
+        }
+        /** Initialize your data structure here. */
+        public MapSum() {
+            this.root = new Node('T');
+        }
+
+        public void insert(String key, int val) {
+            dpsInsert(root, key, val, 0);
+            print(root, 0);
+        }
+
+        private void print(Node curr, int prefix) {
+            for (int i = 0; i < prefix; i++) {
+                System.out.print(" ");
+            }
+            System.out.println(curr.letter + "\tval=" + curr.val + "\tsum=" +curr.sum);
+            for(int i=0;i<26;i++){
+                if(curr.next[i] != null) {
+                    print(curr.next[i], prefix+2);
+                }
+            }
+        }
+
+        /**
+         *
+         * @param node father node
+         * @param key string
+         * @param val value
+         * @param index index of key, the next char to insert
+         */
+        private int dpsInsert(Node node, String key, int val, int index) {
+            if (index >= key.length()) return -1;
+            char c = key.charAt(index);
+            if (null == node.next[c-'a']) {
+                node.next[c-'a'] = new Node(c);
+            }
+            if (index == key.length()-1) {
+                // mark as end point
+                if (!node.next[c-'a'].isEnd) {
+                    node.next[c-'a'].isEnd = true;
+                    node.next[c - 'a'].sum += val;
+                    node.next[c - 'a'].val = val;
+                    return val;
+                } else {
+                    int delta = val - node.next[c - 'a'].val;
+                    node.next[c - 'a'].val = val;
+                    node.next[c - 'a'].sum += delta;
+                    return delta;
+                }
+            }
+            int delta = dpsInsert(node.next[c - 'a'], key, val, index + 1);
+            node.next[c - 'a'].sum += delta;
+            return delta;
+        }
+
+        public int sum(String prefix) {
+            Node curr = root;
+            for (char c : prefix.toCharArray()) {
+                if (curr.next[c-'a'] == null) return 0;
+                curr = curr.next[c-'a'];
+            }
+            System.out.println(curr.sum);
+            return curr.sum;
+        }
+    }
+```
+
+# Complexity3
+```
+Time complexity: O(m) where m is the maximun length of the inserted world
+Space complexity: O(26 ^ m) where m is the maximum length of the inserted world
+```
