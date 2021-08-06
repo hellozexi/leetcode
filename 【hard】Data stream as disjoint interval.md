@@ -143,3 +143,70 @@ public class Solution {
     }
 }
 ```
+# Solution2
+```java
+class SummaryRanges {
+
+    public List<Integer> list;
+    /** Initialize your data structure here. */
+    public SummaryRanges() {
+        this.list = new ArrayList<>();
+    }
+
+    public void addNum(int val) {
+        boolean succ = false;
+        for(int i=0;i<list.size();i++){
+            if (val > list.get(i)) {
+                continue;
+            }
+            if (val == list.get(i)) {
+                succ = true;
+                break;
+            }
+            if (val < list.get(i)) {
+                list.add(i, val);
+                succ = true;
+                break;
+            }
+
+        }
+        if (!succ) {
+            list.add(val);
+        }
+    }
+
+    public int[][] getIntervals() {
+        List<List<Integer>> rst = new ArrayList<>();
+
+        Iterator<Integer> it = list.iterator();
+        if (it.hasNext()) {
+            List<Integer> currList = new ArrayList<>();
+            int last = it.next();
+            currList.add(last);
+            while (it.hasNext()) {
+                int curr = it.next();
+                if (last + 1 != curr) {
+                    currList.add(last);
+                    rst.add(currList);
+                    currList = new ArrayList<>();
+                    last = curr;
+                    currList.add(last);
+                } else {
+                    last = curr;
+                }
+            }
+            if (currList.size() == 1) {
+                currList.add(last);
+                rst.add(currList);
+            }
+        }
+
+        int[][] l = new int[rst.size()][2];
+        for(int i=0;i<l.length;i++){
+            l[i][0] = rst.get(i).get(0);
+            l[i][1] = rst.get(i).get(1);
+        }
+        return l;
+    }
+}
+```
