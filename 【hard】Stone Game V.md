@@ -73,3 +73,44 @@ class Solution {
 }
 
 ```
+
+# Solution2
+```java
+class Solution {
+    public int[] sum;
+
+    public int dp(int[] stoneValue, int l, int r, Integer[][] cache) {
+        if (l == r) return 0;
+        if (cache[l][r] != null) return cache[l][r];
+        int max = 0;
+        for (int i = l; i < r; i++) {
+            int leftSum =  l < 1 ? sum[i] : sum[i]-sum[l-1];
+            int rightSum = sum[r] - sum[i];
+            int tmpMax = 0;
+            if (2*Math.min(leftSum, rightSum) < max) continue;
+            if (leftSum > rightSum) {
+                tmpMax = rightSum + dp(stoneValue, i + 1, r, cache);
+            } else if (leftSum < rightSum) {
+                tmpMax = leftSum + dp(stoneValue, l, i, cache);
+            } else {
+                tmpMax = Math.max(leftSum + dp(stoneValue, l, i, cache), rightSum + dp(stoneValue, i + 1, r, cache));
+            }
+            max = Math.max(max, tmpMax);
+        }
+        cache[l][r] = max;
+        return max;
+    }
+
+    public int stoneGameV(int[] stoneValue) {
+        if (stoneValue.length <= 1) {
+            return 0;
+        }
+        sum = new int[stoneValue.length];
+        sum[0] = stoneValue[0];
+        for(int i=1;i<stoneValue.length;i++) {
+            sum[i] += sum[i-1] + stoneValue[i];
+        }
+        return dp(stoneValue, 0, stoneValue.length-1,  new Integer[stoneValue.length][stoneValue.length]);
+    }
+}
+```
