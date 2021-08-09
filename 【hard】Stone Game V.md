@@ -29,12 +29,12 @@ Input: stoneValue = [4]
 Output: 0
 ```
 
-Constraints:
+**Constraints:**
 
 * 1 <= stoneValue.length <= 500
 * 1 <= stoneValue[i] <= 10^6
 
-# Solution1
+# Solution 1
 ```java
 class Solution {
     public int stoneGameV(int[] stoneValue) {
