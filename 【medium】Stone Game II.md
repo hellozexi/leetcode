@@ -67,3 +67,63 @@ class Solution {
     }
 }
 ```
+
+# Solution2
+```java
+class Solution {
+
+    public int[] piles;
+    public int[][] cache;
+
+    /**
+     * dp 找diff最大的最优解
+     */
+    public int getMaxDiff(int startIndex, int M) {
+        if (cache[startIndex][M] != -1) {
+            return cache[startIndex][M];
+        }
+        if (startIndex >= piles.length) {
+            cache[startIndex][M] = 0;
+            return 0;
+        }
+        int maxDiff = Integer.MIN_VALUE;
+        int currSum = 0;
+        /**
+         * 可以一次取完，取全部石头就是最优解
+         */
+        if (startIndex + 2*M >= piles.length) {
+            for(int i = startIndex; i < piles.length ; i++) {
+                currSum += piles[i];
+            }
+            cache[startIndex][M] = currSum;
+            return currSum;
+        }
+        /**
+         * 找从startIndex开始，取x堆石头(1<=x<=2M)的最优解
+         */
+        for (int x = 1; x<= 2*M;x++) {
+            int currIndex = startIndex + x - 1;
+            currSum += piles[currIndex];
+            maxDiff = Math.max(maxDiff, currSum - getMaxDiff(startIndex + x, Math.max(x, M)));
+        }
+        cache[startIndex][M] = maxDiff;
+        return maxDiff;
+    }
+
+    public int stoneGameII(int[] piles) {
+        this.piles = piles;
+        this.cache = new int[piles.length][piles.length/2+2];
+        for (int i = 0; i<piles.length; i++) {
+            for (int j=0;j<piles.length/2+2;j++) {
+                cache[i][j] = -1;
+            }
+        }
+        int sumStone = 0;
+        for (int p: piles) {
+            sumStone += p;
+        }
+        int maxDiff = getMaxDiff(0, 1);
+        return (sumStone + maxDiff) / 2;
+    }
+}
+```
