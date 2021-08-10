@@ -67,3 +67,30 @@ class Solution {
 }
 
 ```
+
+# Solution2
+```java
+class Solution {
+    public List<List<Integer>> largeGroupPositions(String s) {
+        List<List<Integer>> rst = new ArrayList<>();
+        if (s.length() < 3) return rst;
+        int last = 0;
+        int counter = 1;
+        for(int i = 1; i<s.length();i++) {
+            if (s.charAt(i) == s.charAt(last)) {
+                counter++;
+            } else {
+                if (counter >= 3) {
+                    rst.add(Arrays.asList(last, i-1));
+                }
+                counter = 1;
+                last = i;
+            }
+        }
+        if (counter >= 3) {
+            rst.add(Arrays.asList(last, s.length()-1));
+        }
+        return rst;
+    }
+}
+```
